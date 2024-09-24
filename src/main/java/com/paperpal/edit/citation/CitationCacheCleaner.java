@@ -11,11 +11,12 @@ import java.util.logging.Logger;
 public class CitationCacheCleaner implements RequestHandler<Object, String> {
 
     private static final Logger logger = Logger.getLogger(CitationCacheCleaner.class.getName());
+    private static final String DB_URL = "DB_URL";
 
     @Override
     public String handleRequest(Object o, Context context) {
         logger.info("Stating cleaning cache");
-        try (Connection conn = DatabaseConfiguration.getConnection()) {
+        try (Connection conn = DatabaseConfiguration.getConnection(System.getenv(DB_URL))) {
             // Fetch records from the last 15 minutes
             String selectQuery = "SELECT * FROM citation_style_cache where created_at < ?";
             try (PreparedStatement selectStmt = conn.prepareStatement(selectQuery)) {
@@ -47,10 +48,5 @@ public class CitationCacheCleaner implements RequestHandler<Object, String> {
             return "Error: " + e.getMessage();
         }
         return "Data cleanup completed successfully.";
-    }
-
-    public static void main(String[] args) {
-        CitationCacheCleaner dataCleanupLambda = new CitationCacheCleaner();
-        dataCleanupLambda.handleRequest(null, null);
     }
 }

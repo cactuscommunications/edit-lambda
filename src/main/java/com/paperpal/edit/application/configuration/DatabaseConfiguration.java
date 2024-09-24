@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 public class DatabaseConfiguration {
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(ParameterStoreUtil.getDbUrl(),
+    public static Connection getConnection(String dbUrl) throws SQLException {
+        return DriverManager.getConnection(dbUrl,
                 ParameterStoreUtil.getDbUser(), ParameterStoreUtil.getDbPassword());
     }
 
